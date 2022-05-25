@@ -1,0 +1,23 @@
+.app{
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  .search{
+    box-sizing: border-box;
+    height: 100px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .list{
+    box-sizing: border-box;
+    flex: 1;
+    overflow: hidden;
+  }
+  .player{
+    height:50px
+  }
+}

@@ -1,0 +1,94 @@
+.wrap{
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  .content{
+    border-top: 1px solid #efefef;
+    width: 80%;
+    height: 50px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    .main{
+      flex: 1;
+      height: 100%;
+      display: flex;
+      flex-direction:column ;
+      .progress{
+        flex: 1;
+        box-sizing: border-box;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        .startTime{
+          width: 60px;
+          font-size: 12px;
+          text-align: left;
+          user-select: none;
+        }
+        .endTime{
+          width: 60px;
+          text-align: right;
+          font-size: 12px;
+          user-select: none;
+        }
+        .inner{
+          flex: 1;
+          height: 5px;
+          border: 1px solid #efefef;
+          border-radius: 5px;
+          position: relative;
+          .bar{
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 5px;
+            border-radius: 5px;
+            background: #e331d7;
+          }
+        }
+      }
+      .control{
+        box-sizing: border-box;
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        .lrc{
+          flex: 1;
+          font-size: 12px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: #e331d7;
+        }
+        .downloadList{
+          width: 30px;
+          cursor: pointer;
+        }
+      }
+    }
+    .avatar{
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      .avatarImg{
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        border: 1px solid #e331d7;
+        img{
+          height: 100%;
+          border-radius: 50%;
+        }
+      }
+    }
+  }
+}

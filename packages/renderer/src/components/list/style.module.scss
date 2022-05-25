@@ -1,0 +1,43 @@
+.wrap {
+  box-sizing: border-box;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+
+  .content {
+    width: 80%;
+    overflow: auto;
+    .list {
+      .listItem {
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        padding-bottom: 5px;
+        padding-top: 5px;
+        border-bottom: 1px dashed #efefef;
+        .info {
+          flex: 1;
+
+          .name {
+          }
+        }
+
+        .control {
+          width: 20%;
+          display: flex;
+          align-items: center;
+          justify-content: flex-start;
+
+          .play {
+            flex: 1;
+          }
+
+          .download {
+            flex: 1;
+          }
+        }
+      }
+    }
+  }
+}
