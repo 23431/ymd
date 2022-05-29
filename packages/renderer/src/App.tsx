@@ -2,28 +2,35 @@ import Search from "@/components/search";
 import styles from '@/styles/app.module.scss'
 import List from "@/components/list";
 import {useCallback, useEffect, useRef, useState} from "react";
-import {checkMuisicIsAvailable, getLyric, getMusicUrl, getSearchSongData, ISongProps} from "@/api";
+import {getSearchSongData, ISongProps} from "@/api";
 import Player from "@/components/player";
-import {hanldrLyric, LyricProsp} from "@/utils";
 import DownloadList from "@/components/download-list";
-import {downloadProgress} from "../../main/music";
+import Loading from "@/components/loading";
+import {downloadProgressProps} from "../../main/music";
+
+
+export interface downloadItempProps {
+    progress: number,
+    name: string,
+    id: string | number,
+    savePath: string,
+
+}
 
 const App = () => {
-
-
     const [list, setList] = useState<ISongProps[]>([])
     const [currentSong, setCurrentSong] = useState<ISongProps | null>(null)
+    const [plusSong, setPlusSong] = useState<ISongProps | null>(null)
     const [offset, setOffset] = useState<number>(1)
-    const [url, setUrl] = useState<string>('')
     const keyRef = useRef<string>('')
-    const lryicRef = useRef<LyricProsp[]>([])
     const [isShow, setIsShow] = useState(false)
+    const [loading, setLoading] = useState(false)
     const search = useCallback((key: string) => {
+        setLoading(true)
         keyRef.current = key
-        setOffset(1)
         if (key === '') {
+            setOffset(1)
             setList([])
-            return
         }
         getSongList(key, offset)
     }, [offset])
@@ -32,74 +39,74 @@ const App = () => {
         keyRef.current = ''
         setOffset(1)
     }, [])
+    const downLoadMapRef = useRef<Map<number | string, downloadItempProps>>(new Map())
+    const [downloadList, setDownloadList] = useState<downloadItempProps[]>([])
     useEffect(() => {
-        window.ipcRenderer.on('success', () => {
-            console.log('文件下载成功')
+        window.ipcRenderer.on('download:end', (event, args) => {
+            downloadProgress(args)
         })
-        window.ipcRenderer.on('download:progress', (event, args: downloadProgress) => {
-            console.log(args);
-        })
-
     }, [])
+    const downloadProgress = (args: downloadProgressProps) => {
+        const {songId, progress, filePath} = args
+        if (downLoadMapRef.current && downLoadMapRef.current.has(songId)) {
+            const prevItem = downLoadMapRef.current.get(songId)!
+            downLoadMapRef.current.set(songId, {...prevItem, savePath: filePath, progress: progress})
+            handleDownloadList()
+        }
+    }
     const getSongList = (key: string, offset: number) => {
         getSearchSongData(key, offset).then(r => {
             if (r.code === 200) {
                 const list = r.result.songs
                 setList(l => Array.isArray(list) ? [...l, ...list] : l)
             }
+        }).finally(() => {
+            setLoading(false)
         })
     }
 
     const play = async (song: ISongProps) => {
-        const id = song.id
         setCurrentSong(song)
-        const result = await checkMuisicIsAvailable(id)
-        if (result.success) {
-            const result = await getMusicUrl(id)
-            const lrcResult = await getLyric(id)
-            if (lrcResult.code === 200) {
-                // console.log(lrcResult.lrc.lyric);
-                lryicRef.current = hanldrLyric(lrcResult.lrc.lyric)
-            }
-            if (result.code === 200) {
-                const urls = result.data
-                if (Array.isArray(urls) && urls.length > 0 && urls[0].url) {
-                    setUrl(urls[0].url)
-                }
-            }
-        } else {
-
-        }
+        console.log(song, 'way')
     }
-    const onEnd = () => {
-        setCurrentSong(null)
+    const plus = async (song: ISongProps) => {
+        setPlusSong(song)
     }
     const openDownLoadList = useCallback(() => {
         setIsShow(s => !s)
     }, [isShow])
     const download = (song: ISongProps) => {
+        downLoadMapRef.current?.set(song.id, {name: song.name, progress: 0, savePath: '', id: song.id})
+        handleDownloadList()
         window.ipcRenderer.send('download', song)
     }
+    const handleDownloadList = () => {
+        const list = [...downLoadMapRef.current.values()]
+        setDownloadList(list)
+    }
     const fetchData = () => {
+
         setOffset(c => c + 1)
         search(keyRef.current)
     }
     return (
         <div className={styles.app}>
-
             <div className={styles.search}>
                 <Search search={search} clear={clear}/>
             </div>
             <div className={styles.list}>
-                <List list={list} play={play} download={download} fetchData={fetchData}/>
+                <List list={list} play={play} plus={plus} download={download} fetchData={fetchData}/>
             </div>
 
             <div className={styles.player}>
-                {currentSong ?
-                    <Player url={url} currentSong={currentSong} lyricList={lryicRef.current} onEnd={onEnd}
-                            openDownLoadList={openDownLoadList}/> : null}
+
+                <Player playSong={currentSong} openDownLoadList={openDownLoadList} plusSong={plusSong}
+                />
             </div>
-            {/*<DownloadList isShow={isShow}/>*/}
+            <DownloadList isShow={isShow} list={downloadList}/>
+            {
+                loading ? <Loading/> : null
+            }
         </div>
     )
 }

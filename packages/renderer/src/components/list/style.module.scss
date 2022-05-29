@@ -16,6 +16,7 @@
         padding-bottom: 5px;
         padding-top: 5px;
         border-bottom: 1px dashed #efefef;
+        color: black;
         .info {
           flex: 1;
 
@@ -32,7 +33,9 @@
           .play {
             flex: 1;
           }
-
+          .plus{
+            flex: 1;
+          }
           .download {
             flex: 1;
           }

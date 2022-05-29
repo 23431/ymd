@@ -18,6 +18,7 @@
     "axios": "^0.27.2",
     "electron-store": "^8.0.1",
     "pac-proxy-agent": "^5.0.0",
+    "transition-hook": "^1.5.2",
     "tunnel": "^0.0.6"
   },
   "devDependencies": {

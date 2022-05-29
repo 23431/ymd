@@ -20,30 +20,6 @@ export function Get<R>(url: string) {
     return request.get(url).then(r => r.data as any as IResultProps<R>)
 }
 
-
-function downloadFile(filePath: string, url: string, id: string | number) {
-
-    return new Promise((resolve, reject) => {
-        axios.get(url, {
-            responseType: 'stream', onDownloadProgress: (evt) => {
-                console.log(evt);
-                sendDownloadProgress({id, loaded: evt.loaded, total: evt.total})
-            }
-        }).then(res => {
-
-            let ws = fs.createWriteStream(filePath, {encoding: "binary"})
-            res.data.pipe(ws)
-            res.data.on('close', () => {
-                resolve(true)
-                ws.close()
-            })
-        }).catch(() => {
-            resolve(false)
-        })
-    })
-
-}
-
 function notification(subTitle: string, icon: string) {
     const notification = new Notification({
         title: 'YD',
@@ -53,14 +29,12 @@ function notification(subTitle: string, icon: string) {
     notification.show()
 }
 
-export type downloadProgress = {
-    id: string | number,
-    loaded: number,
-    total: number
+export type downloadProgressProps = {
+    filePath: string, songId: string | number, progress: number
 }
 
-function sendDownloadProgress(args: downloadProgress) {
-    win?.webContents.send('download:progress', args)
+function sendDownloadIndfo(args: downloadProgressProps, type: string = 'download:end') {
+    win?.webContents.send(type, args)
 }
 
 export const getMusicUrl = (id: number | string) => Get<IMusicUrlProps[]>(`/song/url?id=${id}`)
@@ -90,8 +64,7 @@ async function combin(song: ISongProps, path: string) {
     const {flag, url} = await getMuiscReallyAddr(song.id)
     if (flag === 0) {
         const filePath = `${path}/${song.name}.mp3`
-        const result = await downloadFile(filePath, url, song.id)
-        result && notification(song.name, song.al.picUrl || '🎧');
+        createFile(filePath, song, url)
     }
 }
 
@@ -111,4 +84,25 @@ ipcMain.on('download', async (e, song: ISongProps) => {
     }
 
 })
+
+
+function createFile(filePath: string, song: ISongProps, url: string) {
+
+    win?.webContents.downloadURL(url)
+    win?.webContents.session.on('will-download', (event, item, webContents) => {
+        item.setSavePath(filePath)
+        item.on('updated', (event, state) => {
+            const progress = Number.parseFloat((item.getReceivedBytes() / item.getTotalBytes()).toFixed(2))
+            // sendDownloadIndfo({progress, songId: song.id, filePath})
+        })
+        item.once('done', () => {
+            sendDownloadIndfo({progress: 1, songId: song.id, filePath})
+            notification(song.name, song.al.picUrl || '🎧');
+        })
+    })
+
+
+}
+
+
 

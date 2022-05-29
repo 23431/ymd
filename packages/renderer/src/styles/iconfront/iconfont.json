@@ -6,6 +6,104 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "777253",
+      "name": "词表权益",
+      "font_class": "cibiaoquanyi",
+      "unicode": "e671",
+      "unicode_decimal": 58993
+    },
+    {
+      "icon_id": "6151139",
+      "name": "pause circle-fill",
+      "font_class": "pausecircle-fill",
+      "unicode": "e7cb",
+      "unicode_decimal": 59339
+    },
+    {
+      "icon_id": "5561384",
+      "name": "下载列表",
+      "font_class": "xiazailiebiao",
+      "unicode": "e61d",
+      "unicode_decimal": 58909
+    },
+    {
+      "icon_id": "5882907",
+      "name": "下载列表",
+      "font_class": "xiazailiebiao1",
+      "unicode": "e646",
+      "unicode_decimal": 58950
+    },
+    {
+      "icon_id": "5973112",
+      "name": "play-filling",
+      "font_class": "play-filling",
+      "unicode": "e87e",
+      "unicode_decimal": 59518
+    },
+    {
+      "icon_id": "7035067",
+      "name": "我的下载列表",
+      "font_class": "wodexiazailiebiao",
+      "unicode": "e663",
+      "unicode_decimal": 58979
+    },
+    {
+      "icon_id": "8827172",
+      "name": "list",
+      "font_class": "list1",
+      "unicode": "e93c",
+      "unicode_decimal": 59708
+    },
+    {
+      "icon_id": "18226654",
+      "name": "right",
+      "font_class": "right",
+      "unicode": "e624",
+      "unicode_decimal": 58916
+    },
+    {
+      "icon_id": "18226655",
+      "name": "left",
+      "font_class": "left",
+      "unicode": "e625",
+      "unicode_decimal": 58917
+    },
+    {
+      "icon_id": "1704658",
+      "name": "list",
+      "font_class": "list",
+      "unicode": "e6fe",
+      "unicode_decimal": 59134
+    },
+    {
+      "icon_id": "433850",
+      "name": "clear",
+      "font_class": "clear",
+      "unicode": "e642",
+      "unicode_decimal": 58946
+    },
+    {
+      "icon_id": "18957309",
+      "name": "plus",
+      "font_class": "plus",
+      "unicode": "e668",
+      "unicode_decimal": 58984
+    },
+    {
+      "icon_id": "6652505",
+      "name": "finish",
+      "font_class": "finish",
+      "unicode": "e6c7",
+      "unicode_decimal": 59079
+    },
+    {
+      "icon_id": "11981496",
+      "name": "download",
+      "font_class": "download1",
+      "unicode": "e94b",
+      "unicode_decimal": 59723
+    },
+    {
       "icon_id": "4767104",
       "name": "pause",
       "font_class": "pause",

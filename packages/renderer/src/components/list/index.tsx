@@ -7,11 +7,12 @@ interface IProps {
     list: ISongProps[],
     play: (song: ISongProps) => void,
     download: (song: ISongProps) => void,
+    plus: (song: ISongProps) => void,
     fetchData: () => void
 }
 
 const List = (props: IProps) => {
-    const {list, play, download, fetchData} = props
+    const {list, play, download, plus,fetchData} = props
     const wrapRef = useRef<HTMLDivElement | null>(null)
     const contentRef = useRef<HTMLDivElement | null>(null)
 
@@ -37,6 +38,7 @@ const List = (props: IProps) => {
                             <div className={app.name}>{s.name}---{s.al?.name ?? s?.ar ?? s.ar[0].name}</div>
                         </div>
                         <div className={app.control}>
+                            <div className={app.plus +' '+'iconfont icon-plus'} onClick={() => plus(s)} />
                             <div className={app.play +' '+'iconfont icon-play'} onClick={() => play(s)} />
                             <div className={app.download + ' ' + 'iconfont icon-download'} onClick={() => download(s)} />
                         </div>

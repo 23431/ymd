@@ -1,0 +1,28 @@
+.wrap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .content {
+    width: 40px;
+    height: 40px;
+    background-color: rgb(210, 58, 53);
+    border-radius: 8px;
+    animation: loop 1.2s ease infinite;
+  }
+}
+
+@keyframes loop {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

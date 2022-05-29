@@ -50,9 +50,6 @@ const app = http.createServer(async (req, res) => {
         res.end(JSON.stringify(result.body))
         return
     }
-
-    console.log(path)
-    console.log(query)
     res.writeHead(404, {'Content-type': 'text/plain'})
     res.end('404 Not Found \n')
 })
