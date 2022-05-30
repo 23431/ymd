@@ -1,15 +1,18 @@
 import app from './style.module.scss'
-import React, {memo, useCallback, useEffect, useRef, useState} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import {useTransition} from 'transition-hook';
 import {findCurrentLineIndex, formateSongTime, hanldrLyric, LyricProsp} from "@/utils";
 import {checkMuisicIsAvailable, getLyric, getMusicUrl, ISongProps} from "@/api";
 import MusicImg from './music.png'
 import PlayList from "@/components/play-list";
+import {DownloadList} from "@/components/download-list";
+import {downloadItempProps} from "@/App";
+import Modal from "@/components/modal";
 
 interface IProps {
     playSong: ISongProps | null,
     plusSong: ISongProps | null,
-    openDownLoadList: () => void
+    downloadList: downloadItempProps[]
 }
 
 const Player = (props: IProps) => {
@@ -27,12 +30,13 @@ const Player = (props: IProps) => {
     const barRef = useRef<null | HTMLDivElement>(null)
     const [playBtnCls, setPlayBtnCls] = useState(' icon-play-filling ')
     const currentSongIndexRef = useRef(0)
-    const [lry, setLry] = useState('')
+    const [lry, setLry] = useState('暂无歌词')
     const [url, setUrl] = useState<string>('')
     const [showPL, setShowPL] = useState(false)
     const [showLry, setShowLry] = useState(false)
     const {stage, shouldMount} = useTransition(showLry, 300)
-    const {playSong, plusSong, openDownLoadList} = props
+    const [currentModalContent, setCurModalContent] = useState('pl')
+    const {playSong, plusSong, downloadList} = props
     useEffect(() => {
         if (currentSong && currentSong.dt) {
             play(currentSong)
@@ -132,7 +136,7 @@ const Player = (props: IProps) => {
     const getCurrentLyric = (time: number) => {
         const index = findCurrentLineIndex(time, lryicList.current)
         if (index === -1) {
-            setLry('')
+            setLry('暂无歌词')
             return
         }
         const lry = lryicList.current[index]
@@ -176,9 +180,15 @@ const Player = (props: IProps) => {
         setCurrentSong(playList[nextIndex])
         setPlayList(l => l.filter(s => s.id !== id))
     }, [currentSong, isPlay, playList])
-    const onShowPlayList = () => {
-        setShowPL(s => !s)
-    }
+    const onShowPLOrDL = useCallback((currentTag: string) => {
+        setCurModalContent(currentTag)
+        if (!showPL) {
+            setShowPL(s => !s)
+        } else if (currentTag === currentModalContent && showPL) {
+            setShowPL(false)
+        }
+
+    }, [showPL, currentModalContent])
     const updatePlay = useCallback(() => {
         if (!url) return
         const target = audioRef.current
@@ -221,6 +231,11 @@ const Player = (props: IProps) => {
     useEffect(() => {
         setPlayBtnCls(isPlay ? ' icon-pausecircle-fill ' : ' icon-play-filling ')
     }, [isPlay])
+    const CalcModalContent = useCallback(() => {
+        return currentModalContent === 'pl' ?
+            <PlayList list={playList} currrentSongId={currentSong?.id ?? ''} isPlaying={isPlay}
+                      playOrPause={playOrPause} onRemove={onRemove}/> : <DownloadList list={downloadList}/>
+    }, [currentModalContent, showPL, currentSong, isPlay])
     return <div className={app.wrap}>
         <div className={app.content}>
             <div className={app.progress} ref={innerRef}>
@@ -245,9 +260,10 @@ const Player = (props: IProps) => {
                         <span className={'iconfont icon-right ' + app.right} onClick={onRightClick}/>
                     </div>
                     <div className={app.icons}>
-                        <span className={'iconfont icon-wodexiazailiebiao ' + app.icon} onClick={openDownLoadList}/>
+                        <span className={'iconfont icon-wodexiazailiebiao ' + app.icon}
+                              onClick={() => onShowPLOrDL('dl')}/>
                         <span className={'iconfont icon-list ' + app.icon}
-                              onClick={onShowPlayList}/>
+                              onClick={() => onShowPLOrDL('pl')}/>
                         <span className={'iconfont icon-cibiaoquanyi ' + app.icon} onClick={onLryicClick}/>
                     </div>
                 </div>
@@ -261,8 +277,9 @@ const Player = (props: IProps) => {
                 }
             </div>
         </div>
-        <PlayList show={showPL} list={playList} currrentSongId={currentSong?.id ?? ''} isPlaying={isPlay}
-                  playOrPause={playOrPause} onRemove={onRemove}/>
+        <Modal show={showPL}>
+            <CalcModalContent/>
+        </Modal>
         <audio src={url} ref={audioRef} onCanPlay={canPlay} onTimeUpdate={onTimeUpdate}
                onEnded={onEnded}/>
     </div>

@@ -1,15 +1,4 @@
 .wrap {
-  box-sizing: border-box;
-  width: 0;
-  height: calc(100vh - 62px);
-  background: rgb(255, 254, 254);
-  position: fixed;
-  top: 0;
-  right: 0;
-  z-index: 10000;
-  overflow: hidden;
-  box-shadow:  -1px 1px 10px rgb(0,0,0,.2);
-
   .main {
     box-sizing: border-box;
 

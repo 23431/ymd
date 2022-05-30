@@ -4,18 +4,15 @@ import {useTransition} from "transition-hook";
 import {ISongProps} from "@/api";
 
 interface IProps {
-    show: boolean,
     list: ISongProps[],
     currrentSongId: string | number,
     isPlaying: boolean,
-    playOrPause: (id:ISongProps,isPlaying:boolean) => void,
+    playOrPause: (id: ISongProps, isPlaying: boolean) => void,
     onRemove: (id: string | number) => void
 }
 
 const PlayList = (props: IProps) => {
-    const {show, list, currrentSongId, isPlaying, playOrPause, onRemove} = props
-    const {stage, shouldMount} = useTransition(show, 300)
-
+    const { list, currrentSongId, isPlaying, playOrPause, onRemove} = props
     const calItemCls = (index: number, id: string | number) => {
         const isStroke = (index % 2 !== 0) ? app.listItem + ' ' + app.stroke : app.listItem
         const isActive = currrentSongId === id ? ` ${app.isActive} ` : ''
@@ -30,10 +27,7 @@ const PlayList = (props: IProps) => {
     }
     return <div>
         {
-            (shouldMount && <div className={app.wrap} style={{
-                transition: '.3s',
-                width: stage === 'enter' ? '500px' : '0'
-            }}>
+            (<div className={app.wrap}>
                 <div className={app.main}>
                     <div className={app.title}>
                         <h1>当前播放</h1>
@@ -47,7 +41,8 @@ const PlayList = (props: IProps) => {
                                         <div className={app.active}/>
                                         <div className={app.name}>{item.name}</div>
                                         <div className={app.control}>
-                                            <div className={app.play + calPlayBtnCls(item.id)} onClick={()=>playOrPause(item,isPlaying)}/>
+                                            <div className={app.play + calPlayBtnCls(item.id)}
+                                                 onClick={() => playOrPause(item, isPlaying)}/>
                                             <div className={app.remove + ' iconfont icon-clear '}
                                                  onClick={() => onRemove(item.id)}/>
                                         </div>

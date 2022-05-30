@@ -4,7 +4,6 @@ import List from "@/components/list";
 import {useCallback, useEffect, useRef, useState} from "react";
 import {getSearchSongData, ISongProps} from "@/api";
 import Player from "@/components/player";
-import DownloadList from "@/components/download-list";
 import Loading from "@/components/loading";
 import {downloadProgressProps} from "../../main/music";
 
@@ -23,7 +22,6 @@ const App = () => {
     const [plusSong, setPlusSong] = useState<ISongProps | null>(null)
     const [offset, setOffset] = useState<number>(1)
     const keyRef = useRef<string>('')
-    const [isShow, setIsShow] = useState(false)
     const [loading, setLoading] = useState(false)
     const search = useCallback((key: string) => {
         setLoading(true)
@@ -72,9 +70,6 @@ const App = () => {
     const plus = async (song: ISongProps) => {
         setPlusSong(song)
     }
-    const openDownLoadList = useCallback(() => {
-        setIsShow(s => !s)
-    }, [isShow])
     const download = (song: ISongProps) => {
         downLoadMapRef.current?.set(song.id, {name: song.name, progress: 0, savePath: '', id: song.id})
         handleDownloadList()
@@ -99,11 +94,10 @@ const App = () => {
             </div>
 
             <div className={styles.player}>
-
-                <Player playSong={currentSong} openDownLoadList={openDownLoadList} plusSong={plusSong}
-                />
+                <Player playSong={currentSong}  plusSong={plusSong}
+                 downloadList={downloadList}/>
             </div>
-            <DownloadList isShow={isShow} list={downloadList}/>
+
             {
                 loading ? <Loading/> : null
             }
