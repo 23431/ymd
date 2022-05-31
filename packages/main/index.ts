@@ -1,4 +1,4 @@
-import {app, BrowserWindow, shell} from 'electron'
+import {app, BrowserWindow, shell, Menu} from 'electron'
 import {release} from 'os'
 import {join} from 'path'
 import './server/index'
@@ -14,6 +14,8 @@ if (!app.requestSingleInstanceLock()) {
     process.exit(0)
 }
 
+Menu.setApplicationMenu(null)
+
 export let win: BrowserWindow | null = null
 
 async function createWindow() {
@@ -22,6 +24,7 @@ async function createWindow() {
         webPreferences: {
             preload: join(__dirname, '../preload/index.cjs')
         },
+        autoHideMenuBar: true
     })
 
     if (app.isPackaged) {
