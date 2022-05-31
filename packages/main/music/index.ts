@@ -1,5 +1,4 @@
 import {ipcMain, dialog, Notification} from 'electron'
-import * as fs from "fs";
 import {IMusicUrlProps, ISongProps} from "@/api";
 import axios from "axios";
 import {getValue, setValue} from "../store";
@@ -22,7 +21,7 @@ export function Get<R>(url: string) {
 
 function notification(subTitle: string, icon: string) {
     const notification = new Notification({
-        title: 'YD',
+        title: '下载完成',
         icon: icon,
         body: `${subTitle}  ✅　`
     })
